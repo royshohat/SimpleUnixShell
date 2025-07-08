@@ -40,11 +40,23 @@ int main(void){
 			argsCounter++;
 			token = strtok(NULL, " ");
 		}
-		args[argsCounter] = NULL;
 
 		if (argumentsFlow) continue;
-		
+		args[argsCounter] = NULL; //the last argument has /n from fgets
 
+		if(strcmp(args[0], "exit") == 0 && argsCounter == 1){
+			printf("exiting...\n");
+			exit(0);
+		}
+		else if(strcmp(args[0], "pwd") == 0 && argsCounter == 1){
+			getcwd(buffer, 100); // reusing the buffer cause i can 
+			printf("%s\n", buffer);
+			continue;
+		}
+		else if(strcmp(args[0], "cd") == 0 && argsCounter == 2){
+			chdir(args[1]);
+			continue;
+		}
 		p = fork();
 
 		if(p==0){
