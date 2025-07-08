@@ -1,21 +1,21 @@
 #include <stdio.h>
+#include <sys/wait.h>
 #include <string.h>
 #include <stdlib.h>
 #include <sys/types.h>
 #include <unistd.h>
+
+#include "util.h"
 
 int main(void){
 	pid_t p;
 	char buffer[100];
 	char* args[20];
 	int n;	
-	int argumentsFlow;
 	int argsCounter = 0;
-	char* token;
 	char* newLine;	
 
 	while(!0){	
-		argumentsFlow = 0;
 		argsCounter = 0;
 
 		printf("mysh> ");
@@ -25,25 +25,27 @@ int main(void){
 			printf("too long\n");
 			continue;	
 		}	
-		*newLine = '\0';
+		*newLine = '\0'; //the last argument has /n from fgets
 
-		token = strtok(buffer, " ");
-		
-		while(token != NULL){
-			if(argsCounter >= 20){
-				printf("to much arguments\n");
-				argumentsFlow = 1;
-				break;
-			}		
-					
-			args[argsCounter] = token;
-			argsCounter++;
-			token = strtok(NULL, " ");
-		}
+    //returns one if args went above 20 
+    
+		if (parseToArgs(buffer, args, &argsCounter)==1) continue;
 
-		if (argumentsFlow) continue;
-		args[argsCounter] = NULL; //the last argument has /n from fgets
-
+		args[argsCounter] = NULL;
+    
+    for(int i=0; i<argsCounter; i++){
+      if(strcmp(args[i], "|")){
+        //will be handled later             
+      }
+      if(strcmp(args[i], ">")){
+        //will be handled later             
+      }
+      if(strcmp(args[i], "<")){
+        //will be handled later             
+      }
+    }
+    
+      
 		if(strcmp(args[0], "exit") == 0 && argsCounter == 1){
 			printf("exiting...\n");
 			exit(0);
@@ -61,12 +63,15 @@ int main(void){
 
 		if(p==0){
 			execvp(args[0], args);
+      // returns only if error occurred 
 			printf("couldn't load bin\n");
 			exit(0);
 		}
+    wait(NULL);
 
 		usleep(250000);  // 250,000 microseconds = 0.25 seconds
 	}
 	
 	return 0;
 }	
+
