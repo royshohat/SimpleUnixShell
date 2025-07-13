@@ -3,21 +3,25 @@
 
 #include "util.h"
 
-int parseToArgs(char* buffer, char** args, int* argsCounter){
+void parseToArgs(char* commend, char** args, int* argsCounter){
+	*argsCounter = 0;
 
 	char* token;
-  token = strtok(buffer, " ");
+  token = strtok(commend, " ");
+
+  args[*argsCounter] = token;
+  (*argsCounter)++;
+  token = strtok(NULL, " ");
+}
+// returns amount of commends
+void parseForPipe(char* buffer, char** commends, int* commendsCount){
+  *commendsCount = 0;
+	char* token;
+  token = strtok(buffer, "|");
 
   while(token != NULL){
-    if(*argsCounter >= 20){
-      printf("to much arguments\n");
-      return 1;
-    }		
-        
-    args[*argsCounter] = token;
-    (*argsCounter)++;
-    token = strtok(NULL, " ");
+    commends[*commendsCount] = token;
+    token = strtok(NULL, "|");
+    (*commendsCount)++;
   } 
-
-  return 0;
 }
