@@ -16,4 +16,5 @@ To compile and run:
 
 ```
 make sh
+./shell
 ```

@@ -85,7 +85,7 @@ int main(void) {
             }
         }
 
-        for (i = 0; i < commandsCount; i++) {
+        for (int i = 0; i < commandsCount; i++) {
             pid_t pid = fork();
             if (pid == -1) {
                 perror("fork");
